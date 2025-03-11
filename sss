@@ -1,0 +1,1458 @@
+UNIT NO	List of Practical	Date	Signature
+
+1	Write a program for implementing Client  Server communication model using TCP		
+
+2	Write a program for implementing the Client Server communication model using UDP. 		
+
+3	 Write a program to show the object communication using RMI. 		
+
+4	Show the implementation of web services.		
+
+5	 Study and implementation of Infrastructure as a Service.
+and study of cloud computing Architecture		
+6	 Installation and Configuration of virtualization using KVM.		
+7	Study and implementation of Infrastructure as a Service 		
+8	Study and implementation of Storage as a Service		
+9	Study and implementation of Identity Management		
+10	Study Cloud Security management		
+11	Write a program for the web feed.		
+12	Study and implementation of Single-Sing-On.		
+13	User Management in the Cloud		
+14	Case study on Amazon EC2/Microsoft Azure/Google Cloud Platform		
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PRACTICAL 1
+Date: 05-12-24
+
+Aim: Write a program for implementing a client server communication model using TCP.
+
+a)	A client-server based program using TCP to find if the number entered is prime or not. Server Code:
+package primenumber; import java.net.*; import java.io.*;
+public class PrimeNumber{
+public static void main(String[] args){ try{
+ServerSocket ss = new ServerSocket(8001); System.out.println("Server Started	");
+Socket s = ss.accept();
+DataInputStream in = new DataInputStream(s.getInputStream()); int x = in.readInt();
+DataOutputStream otc = new DataOutputStream(s.getOutputStream()); boolean isPrime = true;
+if (x <= 1) { isPrime = false;
+} else {
+for (int i = 2; i <= x / 2; i++) { if (x % i == 0) {
+isPrime = false; break;
+}
+}
+}
+if (isPrime) {
+otc.writeUTF(x + " is prime");
+} else {
+otc.writeUTF(x + " is not prime");
+}
+s.close();
+ss.close();
+} catch (Exception e) { System.out.println(e.toString());
+}
+}
+}
+ 
+OUTPUT:
+
+
+Client-code:
+package clientprime; import java.io.*; import java.net.*;
+public class ClientPrime {
+public static void main(String[] args) { try{
+Socket cs = new Socket("LocalHost",8001);
+BufferedReader infu = new BufferedReader(new InputStreamReader(System.in)); System.out.println("Enter A number :");
+int a = Integer.parseInt(infu.readLine());
+DataOutputStream out = new DataOutputStream(cs.getOutputStream()); out.writeInt(a);
+DataInputStream in = new DataInputStream(cs.getInputStream()); System.out.println(in.readUTF());
+cs.close();
+}
+catch(Exception e){ System.out.println(e.toString());
+}
+}
+}
+
+OUTPUT:
+
+ 
+b)	A client-server based program using TCP to find if the number entered is Even or Odd. Server code:
+package evenodd1; import java.net.*; import java.io.*;
+public class Evenodd1 {
+public static void main(String[] args) throws IOException { try{
+ServerSocket ss = new ServerSocket(8002); System.out.println("Server Started	");
+Socket s = ss.accept();
+DataInputStream in = new DataInputStream(s.getInputStream()); int x = in.readInt();
+DataOutputStream otc = new DataOutputStream(s.getOutputStream()); if(x % 2==0)
+{
+otc.writeUTF(x + "is Even");
+}
+else{
+otc.writeUTF(x + "is odd");
+}
+}
+catch(Exception e){ System.out.println(e.toString());
+}
+}
+}
+
+OUTPUT:
+
+ 
+Client-code:
+package evenoddclient; import java.net.*; import java.io.*;
+public class Evenoddclient {
+public static void main(String[] args) { try{
+Socket cs = new Socket("LocalHost",8002);
+BufferedReader infu = new BufferedReader(new InputStreamReader(System.in)); System.out.println("Enter A number :");
+int a = Integer.parseInt(infu.readLine());
+DataOutputStream out = new DataOutputStream(cs.getOutputStream()); out.writeInt(a);
+DataInputStream in = new DataInputStream(cs.getInputStream()); System.out.println(in.readUTF());
+cs.close();
+}
+catch(Exception e){ System.out.println(e.toString());
+}
+}
+}
+
+OUTPUT:
+
+ 
+c)	A client-server based program using TCP to find the factorial of the number entered. Server code:
+package facto; import java.io.*; import java.net.*; public class Facto {
+public static void main(String[] args) { try{
+ServerSocket ss = new ServerSocket(8003); System.out.println("Server Started	");
+Socket s = ss.accept();
+DataInputStream in = new DataInputStream(s.getInputStream()); int x = in.readInt();
+DataOutputStream otc = new DataOutputStream(s.getOutputStream()); long factorial=1;
+for(int i =1;i<=x;i++){ factorial *= i;
+}
+otc.writeUTF("Factorial of"+ x+"is"+factorial);
+}
+catch(Exception e){ System.out.println(e.toString());
+}
+}
+}
+
+Client-code package factoclient; import java.io.*; import java.net.*;
+public class FactoClient {
+public static void main(String[] args) { try{
+Socket cs = new Socket("LocalHost",8003);
+BufferedReader infu = new BufferedReader(new InputStreamReader(System.in)); System.out.println("Enter A number :");
+int a = Integer.parseInt(infu.readLine());
+DataOutputStream out = new DataOutputStream(cs.getOutputStream()); out.writeInt(a);
+DataInputStream in = new DataInputStream(cs.getInputStream()); System.out.println(in.readUTF());
+cs.close();
+}
+catch(Exception e){
+ 
+System.out.println(e.toString());
+}
+}
+}
+
+OUTPUT:
+
+ 
+PRACTICAL 2
+Date: 12-12-24
+
+Aim: Write a program for implementing the Client-Server communication model using UDP.
+
+a)	Client-Server based program UDP to find the number entered is even or odd.
+
+Server Code:
+package evenoddserver; import java.io.*;
+import java.net.*;
+public class EvenOddServer {
+public static void main(String[] args) { try
+{
+DatagramSocket ds = new DatagramSocket(2000); byte b[] = new byte[1024];
+DatagramPacket dp = new DatagramPacket(b,b.length); ds.receive(dp);
+String str = new String(dp.getData(),0,dp.getLength()); System.out.println(str);
+int a = Integer.parseInt(str); String s = new String(); if(a%2==0)
+s= "Number is even"; else
+s= "Number is odd"; byte b1[] = new byte[1024]; b1 = s.getBytes(); DatagramPacket dp1 = new
+DatagramPacket(b1,b1.length,InetAddress.getLocalHost(),1000); ds.send(dp1);
+}
+catch(Exception e)
+{
+e.printStackTrace();
+}
+}
+}
+ 
+Client Code:
+package evenoddclient1; import java.io.*;
+import java.net.*;
+public class EvenOddClient1 {
+public static void main(String[] args) { try
+{
+DatagramSocket ds = new DatagramSocket(1000);
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in)); System.out.println("Enter a number :");
+String num = br.readLine(); byte b[] = new byte[1024]; b= num.getBytes(); DatagramPacket dp = new
+DatagramPacket(b,b.length,InetAddress.getLocalHost(),2000); ds.send(dp);
+byte b1[] = new byte[1024];
+DatagramPacket dp1 =new DatagramPacket(b1,b1.length); ds.receive(dp1);
+String str = new String(dp1.getData(),0,dp1.getLength()); System.out.println(str);
+}
+catch(Exception e)
+{
+e.printStackTrace();
+}
+}
+}
+
+OUTPUT:
+
+ 
+
+ 
+
+b)	Client-server based program using UDP to find factorial of entered number.
+
+Server Code package serverfacto; import java.io.*; import java.net.*;
+public class ServerFacto {
+public static void main(String[] args) { try{
+DatagramSocket ds = new DatagramSocket(2000); byte b [] = new byte[1024];
+DatagramPacket dp = new DatagramPacket(b,b.length); ds.receive(dp);
+String str = new String(dp.getData(),0,dp.getLength()); System.out.println(str);
+int num = Integer.parseInt(str);
+long factorial = calculateFactorial(num);
+String result = "Factorial of" + num + "is" + factorial; byte b1[]= result.getBytes();
+DatagramPacket dp1 = new DatagramPacket(b1,b1.length,InetAddress.getLocalHost(),1000);
+ds.send(dp1);
+}
+catch(Exception e)
+{
+e.printStackTrace();
+}
+}
+public static long calculateFactorial(int num)
+{
+long factorial =1; for(int i=1;i<=num;i++){
+factorial*=i;
+}
+return factorial;
+ 
+}
+}
+
+Client Code package clientfacto; import java.io.*; import java.net.*;
+public class ClientFacto {
+public static void main(String[] args) { try
+{
+DatagramSocket ds=new DatagramSocket(1000);
+BufferedReader br=new BufferedReader(new InputStreamReader(System.in)); System.out.println("Enter a number: ");
+String num=br.readLine(); byte[] b=num.getBytes(); DatagramPacket dp=new
+DatagramPacket(b,b.length,InetAddress.getLocalHost(),2000); ds.send(dp);
+byte[] b1=new byte[1024];
+DatagramPacket dp1=new DatagramPacket(b1,b1.length); ds.receive(dp1);
+String result=new String(dp1.getData(),0,dp1.getLength()); System.out.println(result);
+}
+catch(Exception e)
+{
+e.printStackTrace();
+}
+}
+}
+
+OUTPUT:
+
+ 
+
+ 
+
+c)	Client-server based program to implement simple calculator operations addition, subtraction, multiplication and division.
+
+Server Code:
+package calserver; import java.io.*; import java.net.*;
+public class CalServer {
+public static void main(String[] args) { try {
+DatagramSocket ds = new DatagramSocket(2000); byte[] b = new byte[1024];
+DatagramPacket dp = new DatagramPacket(b, b.length); ds.receive(dp);
+String str = new String(dp.getData(), 0, dp.getLength()); System.out.println("Received data: " + str);
+
+// Parse the received data (e.g., "5 + 3") String[] parts = str.split(" ");
+double num1 = Double.parseDouble(parts[0]); String operation = parts[1];
+double num2 = Double.parseDouble(parts[2]);
+
+// Perform the operation double result = 0; switch (operation) {
+case "+":
+result = num1 + num2; break;
+case "-":
+result = num1 - num2; break;
+case "*":
+result = num1 * num2;
+    break;
+case "/":
+if (num2 != 0) {
+result = num1 / num2;
+} else {
+throw new ArithmeticException("Division by zero");
+}
+break; default:
+throw new IllegalArgumentException("Invalid operation: " + operation);
+}
+
+// Send the result back to the client String response = "Result: " + result; byte[] b1 = response.getBytes();
+DatagramPacket dp1 = new DatagramPacket(b1, b1.length, dp.getAddress(), dp.getPort());
+ds.send(dp1);
+} catch (Exception e) { e.printStackTrace();
+}
+}
+}
+
+Client Code:
+package calclient; import java.io.*; import java.net.*;
+public class CalClient {
+public static void main(String[] args) { try {
+DatagramSocket ds = new DatagramSocket(1000);
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+// Input two numbers and an operation from the user System.out.println("Enter the first number: "); String num1 = br.readLine(); System.out.println("Enter the operation (+, -, *, /): "); String operation = br.readLine(); System.out.println("Enter the second number: "); String num2 = br.readLine();
+
+// Combine input into a single string
+String data = num1 + " " + operation + " " + num2; byte[] b = data.getBytes();
+
+// Send the data to the server
+DatagramPacket dp = new DatagramPacket(b, b.length, InetAddress.getLocalHost(), 2000);
+ds.send(dp);
+
+// Receive the result from the server byte[] b1 = new byte[1024];
+DatagramPacket dp1 = new DatagramPacket(b1, b1.length); ds.receive(dp1);
+String response = new String(dp1.getData(), 0, dp1.getLength()); System.out.println(response);
+
+} catch (Exception e) { e.printStackTrace();
+}
+}
+}
+
+OUTPUT:
+Addition:
+
+
+ 
+Subtraction:
+
+
+
+Multiplication:
+
+ 
+
+ 
+
+Division:
+
+
+
+d)	Client-server based program to find square, square root, cube and cube root of the entered numbers.
+
+Server code:
+package udpserveroperations; import java.io.*;
+import java.net.*; import java.math.*;
+public class UdpServerOperations { public static void main (String args []){ try {
+System.out.print("Server is running..."); DatagramSocket ds = new DatagramSocket(2000);
+ 
+byte b[]=new byte[1024];
+DatagramPacket dp = new DatagramPacket(b,b.length); ds.receive(dp);
+String str=new String (dp.getData(),0,dp.getLength()); System.out.println(str);
+int a =Integer.parseInt(str); String s= new String();
+s="The Square: "+ a*a+" \nSquare _Root: "+Math.sqrt(a)
++"\nCube:"+a*a*a+"\nCube_Root: "+Math.cbrt(a); byte b1[]= new byte[1024];
+b1=s.getBytes(); DatagramPacket dp1= new
+DatagramPacket(b1,b1.length,InetAddress.getLocalHost(),1000); ds.send(dp1);
+}
+catch (Exception e){ e.printStackTrace();
+}
+}
+}
+
+Client code:
+package udpclientoperations; import java.io.*;
+import java.net.*;
+public class UdpClientOperations { public static void main (String args[]){
+try {
+System.out.println("Client is running...");
+BufferedReader br = new BufferedReader (new InputStreamReader(System.in)); System.out.println("Enter Number :");
+String num= br.readLine(); byte b[]= new byte[1024]; b=num.getBytes();
+DatagramSocket ds= new DatagramSocket (1000); DatagramPacket dp = new
+DatagramPacket(b,b.length,InetAddress.getLocalHost(),2000); ds.send(dp);
+byte b1[]= new byte[1024];
+DatagramPacket dp1= new DatagramPacket(b1,b1.length); ds.receive(dp1);
+String r= new String (dp1.getData(),0,dp1.getLength()); System.out.println(r);
+}
+ 
+catch (Exception e){ e.printStackTrace();
+}
+}
+}
+
+OUTPUT:
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PRACTICAL 3
+Date: 02-01-25
+
+Aim: Write a program to show the object communication using RMI.
+a)	RMI-based application program to display current date and time.
+
+import java.rmi.*;
+public interface InterDate extends Remote { public String display() throws Exception;
+}
+//Server code import java.rmi.*;
+import java.rmi.server.*; import java.util.*;
+public class ServerDate extends UnicastRemoteObject implements InterDate{ public ServerDate() throws Exception
+{
+}
+public String display() throws Exception
+{
+String str="";
+Date d=new Date(); str=d.toString(); return str;
+}
+public static void main(String args[]) throws Exception { ServerDate s1=new ServerDate();
+Naming.bind("DS", s1); System.out.println("Object registered	");
+}
+}
+
+Client Code import java.rmi.*; import java.io.*;
+public class ClientDate {
+public static void main(String args[]) throws Exception { String s1;
+InterDate h1=(InterDate)Naming.lookup("DS"); s1=h1.display();
+System.out.println(s1);
+}
+}
+OUTPUT:
+
+
+
+b)	RMI-based application program that converts digits to words. Eg 123 will be converted to ONE TWO THREE.
+
+//interface.java import java.rmi.*;
+public interface InterConvert extends Remote{
+public String convertDigit(String no) throws Exception;
+}
+//server code import java.rmi.*;
+import java.rmi.server.*;
+public class ServerConvert extends UnicastRemoteObject implements InterConvert{ public ServerConvert() throws Exception
+{
+}
+public String convertDigit(String no) throws Exception
+{
+String str="";
+for(int i=0;i<no.length();i++)
+{
+int p=no.charAt(i); if(p==48)
+{
+str+="zero";
+}
+if(p==49)
+{
+str+="one";
+}
+if(p==50)
+{
+str+="two";
+}
+if(p==51)
+{
+str+="three";
+}
+if(p==52)
+{
+str+="four";
+}
+if(p==53)
+{
+str+="five";
+}
+if(p==54)
+{
+str+="six";
+}
+if(p==55)
+{
+str+="seven";
+}
+if(p==56)
+{
+str+="eight";
+}
+if(p==57)
+{
+str+="nine";
+}
+}
+return str;
+}
+public static void main(String args[]) throws Exception { ServerConvert s1=new ServerConvert(); Naming.bind("Wrd", s1);
+System.out.println("Object registered	");
+}
+}
+Client code import java.rmi.*; import java.io.*;
+public class ClientConvert {
+public static void main(String args[]) throws Exception
+{
+InterConvert h1=(InterConvert)Naming.lookup("Wrd");
+BufferedReader br=new BufferedReader(new InputStreamReader(System.in)); System.out.println("Enter a number : \t");
+String no=br.readLine();
+String ans=h1.convertDigit(no);
+System.out.println("The word representation of the entered digit is : "+ans);
+}
+}
+
+OUTPUT:
+
+
+
+ 
+
+PRACTICAL 4
+
+Date: 16-01-25
+
+Aim: Show the implementation of webservices.
+a)	Implement Big web services.
+
+Step 1: Select File → New Project → Java Web → Web Application.
+
+ 
+Step 2: Name the project as “CalculatorWSApplication”.Click on Next.
+
+
+Step 3: A window like this will appear right click on the project that we created New → Web Service.
+ 
+Step 4: Give the name as “CalculatorWS” and also provide a package name as “org.me.calculator”.Click on Finish.
+
+Step 5: Now a window like this will appear along with the source code as below.
+
+ 
+Step 6: Go to the Design tab as shown below.
+
+
+Step 7: In the first dialog box give the Name as “Add” and Return Type as “int”. Then click on the add button to add “i” and “j” parameters and provide the type as “int”. Click on Ok.
+ 
+Step 8: The following code will be visible in the source code .
+
+
+Step 9: Now Right Click on the project and select “Deploy”.
+  .
+ 
+Step 10: Now go to the project tab→web services→CalculatorWS. Right click on it and select “Test Web Services”.
+
+Step 11: A window like this will appear provide the numbers as “3” and “4” click on the add button.
+ 
+Step 12: Here we can see the method returned as “int 7”.
+
+
+Step 13: Now we have to create a client for consuming the web services . Click on File → New Project → Java → Java Application.
+ 
+Step 14: Give the Name as “Calculator_WS_Client_Application. Click on Finish.
+
+
+Step 15: Right click on the project New → Web Service → Client.
+
+ 
+Step 16: Select project as the WSDL File of the Web Service and click on Browse.
+
+
+Step 17: Select CalculatorWS. Click on Ok.
+
+ 
+Step 18: A window like this will appear .
+
+
+Step 17: Right click on the main method area and select “Insert Code”.
+
+ 
+Step 18: Select on the “Call Web Service Operation”.
+
+
+Step 19: Select Calculator_WS_Client_Application→CalculatorWS→CalculatorWSPort→Add.Click on Ok.
+ 
+Step 20: Type the following code as shown below.
+
+
+Step 21: Right click on the project→Run.
+
+ 
+OUTPUT:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PRACTICAL 6
+Date:
+Aim: Installation and configuration of virtualization using KVM.
+
+Objectives: From this experiment, the student will be able to,
+●	Understand the concept of virtualization.
+●	Understand KVM architecture and its configuration.
+
+Outcomes: The learner will be able to
+●	Analyze user models and develop user centric interfaces.
+●	To analyze local and global impact of computing on individuals, organizations and society.
+●	To engage in life-long learning development and higher studies.
+●	To understand, identify,analyze and design the problem, implement and validate the solutions including both hardware and software.
+
+Hardware / Software Required: Ubuntu operating system, open-source software KVM, Internet.
+
+Theory:
+
+Virtualization is software that separates physical infrastructures to create various dedicated resources.It is the fundamental technology that powers cloud computing. The technology behind virtualization is known as a virtual machine monitor(VMM) or virtual manager, which separates compute environments from the actual physical infrastructure.
+
+Virtualizations make servers,workstations,storage and other systems independent of the physical hardware layer. This is done by installing a Hypervisor on top of the hardware layer, where the systems are then installed.
+
+There are three areas of IT where virtualization is making headboards , network virtualization,storage virtualization and server virtualization:
+●	Network virtualization is a method of combining the available resources in a network by splitting up the available bandwidth into channels , each of which is independent from the others, and each of which can be assigned(or reassigned) to a particular server or device in real time. The idea is that virtualization disguises the true complexity of the network by separating it into manageable parts , much like your partitioned hard drive makes it easier to manage your files.
+ 
+
+Step 1: Open VMware to create a new virtual machine and select the option “Create New Virtual Machine”.
+
+
+
+
+
+Step 2: Select the “Typical(recommended)” option and click on Next.
+ 
+
+Step 3: The following window will appear click on Next and proceed.
+
+
+Step 4: Fill the following fields such as the Full name,Username and Password . Click on Next.
+ 
+ 
+
+Step 5: The following fields show the Name and Location where the Virtual Machine Is Stored
+
+
+Step 6: Keep the maximum disk size as 20.0 GB and select the “Split virtual disk into multiple files” option.
+ 
+ 
+
+Step 7: Click on the option of “Customize Hardware”.
+
+
+Step 8: Click on processors and keep the value of Number of processors and Number of core processors as 2. And make sure that the below two checkboxes are ticked .
+Click on close and then on finish.
+ 
+
+Step 9: The following window will appear once the virtual machine starts, go to the command prompt section
+ 
+Step 10 : Update Ubuntu by executing following commands
+●	Sudo apt update
+●	Sudo apt upgrade
+
+ 
+
+Step 11: Check the virtualization support for Ubuntu by executing the following command. This command returns a numeric value ,if it returns 0 it means that our processor is not capable of running KVM. Any other value indicates its KVM.
+ 
+
+Step 12: Check if the system is accelerated by using the command “sudo kvm-ok”. If kvm-ok returns an error then install cpu-checker to resolve the issue .Once the installation is done rerun the command “sudo kvm-ok”.
+ 
+
+Step 13: Install KVM package by executing the following command.
+ 
+
+Step 14: Only members of libvirt and KVM usergroups can run virtual machine . If you want a specific user to run a virtual machine then we have to add that user group with the following command.
+ 
+ 
+
+Step 15: Do the same thing with the KVM group.
+
+
+Step 16: Verify the installation. Confirm the KVM installation with virsh command . The command will list all active and inactive virtual machines on the system.
+ 
+
+Step 17: Use systemctl command to check the status of libvirtd, the daemon that provides the backend services for libvirt virtualization management system. If the virtualization is not active then activate it with following command
+“sudo systemctl enable - - now libvirtd”
+
+Step 18: Create a virtual machine on Ubuntu. For creating a virtual machine install virt- manager, it is a tool for creating and managing virtual machines.
+ 
+
+ 
+
+Step 19: Copy the Ubuntu ISO file to the desktop of the virtual machine and click on the Following option.
+
+Step 20: Here the file is being copied.
+
+ 
+
+Step 21: Browse the ISO file and tick the checkbox as follows. Click on forward.
+
+Step 22: Select the cpu and memory as required. Click on forward.
+ 
+
+Step 23: Give the disk size as required in that field. Click on forward.
+
+Step 24: The following window will appear which is the final stage of the installation
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Date:-
+Practical 7
+
+Aim : Study and implementation of Infrastructure as a Service.
+
+Step 1: Open VMware to create a new virtual machine and select the option “Create a New Virtual Machine”.
+
+
+
+Step 2: Select the “Typical(recommended)” option and click on Next.
+
+Step 3: The following window will appear, click on Next and proceed.
+ 
+
+Step 4: Fill the following fields such as the Full name,Username and Password . Click on Next. (Password-ccpr)
+ 
+
+Step 5: The following fields show the Name, Location where the Virtual Machine is stored.
+
+Step 6: Keep the maximum disk size as 30.0 GB and select the “Split virtual disk into multiple files” option. Click on Next.
+ 
+ 
+
+Step 7: Click on the option of “Customize Hardware”.
+
+Step 8: Click on Memory and set the memory as 8000 MB and then click on processors and keep the value of Number of processors and Number of core processors as 2. And make sure that the below two checkboxes are ticked . Click on close and then on finish.
+ 
+
+ 
+
+ 
+
+ 
+
+Step 9: Now the following window will appear then open command prompt.
+
+Step 10: Update Ubuntu by executing following commands
+●	Sudo apt update
+●	Sudo apt upgrade
+
+ 
+
+Step 11: Now reboot the system by the ‘sudo reboot’ or ‘init 6’ command.
+
+Step 12: Now select your created machine and enter the respective password.
+
+
+Step 13: Create new user called stack
+
+Step 14: Log in as root.
+
+Step 15: Assign the sudo privileges to stack user as follows (#echo “stack ALL=(ALL) NOPASSWD:ALL” | sudo tee /etc/sudoers.d/stack)
+ 
+ 
+
+Step 16: Switch to the stack user, by following command “sudo su - stack”.
+
+Step 17: Install the Git using the command “sudo apt install git -y”.
+
+Step 18: Download OpenStack
+Once Git is installed, download the DevStack from github by following command “git clone https://git.openstack.org/openstack-dev/devstack”.
+ 
+
+Step 19: Go to DevStack directory and look for local.conf file.
+ 
+
+Step 20: Install vim using the command “sudo apt-get install vim”.
+
+
+Step 21: For fetching IP address go to ‘Wired Connected’ option.
+
+Step 22: Now note down the IPv4 Address. Here “192.168.42.129”
+ 
+
+Step 23: Now open the local.conf file using command “vim local.conf”.
+
+Step 24: Once the file is opened go to insert mode and then after the device_password field write the system IP address that we copied from settings above “HOST_IP=192.168.42.129”
+ 
+HOSTIP=192.168.42.129
+
+Step 26: To install and run the OpenStack, execute the following commands “./stack.sh”
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Date:-
+Practical 8
+
+Aim : Study and implementation of Storage as a Service.
+
+On the google drive - create docs. - presentation 10 slides(style and animation) - google form 10 questions (different format) - spreadsheet (calculations) - share.
+
+Presentation :
+
+
+
+ 
+
+ 	 
+
+
+Google Form :
+
+
+ 
+
+
+ 
+
+
+Spreadsheet :
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Practical 9
+Study and implementation of Identity management 
+Step 1: Open owncloud
+
+Step 2: Select the plan ,here we select the 1TB Free plan
+
+ 
+Step 3: Select The Info/Demo Option
+
+Step 4: Using The The Username and Password Provided login to the Owncloud user and Admin account
+ 
+
+
+
+
+
+
+
+
+Step 5: Hence You are Logged into the user account
+
+
+ 
+Step 6: Now try to upload any file
+
+Step 7: Now log out of the user account and log into the admin account
+
+ 
+Step 8: Here you are logged into the admin account whi
+
+
+
+
+Date:-
+Practical 10
+
+Aim : Study Cloud Security management.
+
+Step 1: Search AWS in Google and open the following page. Proceed to click on “Create AWS Account”.
+ 
+
+Step 2: Select the option of “Sign in to an existing AWS account”.
+
+Step 3: Select the option of “Sign in using root user email”.
+ 
+
+Step 4: Provide the email id in the given field and click on Next.
+
+
+Step 5: Enter the password of the root user and sign in to the account.
+
+
+
+Step 6: The following window will appear after the login to the account is successful.
+ 
+
+Step 7: Search for “IAM” in the search bar and select the first option.
+
+Step 8: The following dashboard will appear from this select the option of “Users”.
+
+Step 9: Click on “Create User” to create a new user into the account.
+ 
+
+Step 10: Provide the name of the user and then tick the checkbox. Following dropdown will appear from that select “I want to create an IAM user.
+
+
+Step 11: Click on “Custom password” and enter the password you want to provide then tick the checkbox seen below and proceed to click on next.
+ 
+
+ 
+
+
+Step 12: The following window will appear. Check every detail and click on “Create User”.
+
+
+Step 13: Here we can see that the user has been successfully created. Download the csv file of the credentials which is required for the further use.
+ 
+ 
+
+
+Step 14: Here we can see the user we created just now.
+
+
+Step 15: Click on “User groups” and select the option on “Create group”.
+
+Step 16: Give the group name in the respective field and select the users to add into the group.
+ 
+
+
+Step 17: Here Attach the permission policies, select the first option as shown below. Click on create group.
+
+
+Step 18: Here the group is successfully created as shown below.
+
+Step 19: Go to the Users and click on the link of the user just created, The following window will appear in that click on the option of “Enable without MFA” and select the option of “Enable MFA”.
+ 
+ 
+
+
+Step 20: Give a name to the MFA device.
+
+
+Step 21: Select the option of “Authenticator app”.
+
+Step 22: Click on Show QR Code to get the code to scan. Scan the QR Code and wait till the MFA code is generated and provide the code in the following fields. Click on Add MFA.
+ 
+ 
+
+
+Step 23: Here the MFA device is successfully assigned.
+
+
+Step 24: Go back to the login page and enter the details required. The details can be obtained from the credential.csv file . Click on Sign-in.
+ 
+
+Step 25: Enter the MFA code and click on Sign-in.
+ 
+
+Step 26: Here we have to create a new password for that enter the old password first and then the new one. Click on Confirm Password Change.
+ 
+
+Step 27: Here we can see that the password has been reset successfully. Click on continue to sign-in.
+ 
+
+Step 28: Here we are signed in into the Console home again as an IAM User.
+ 
+
+Date:-
+Practical 11
+
+Aim : Write a program for the web feed.
+
+Step 1: Start Visual Studio → Create a new project → All Languages → C# → All Platform → Windows → All project types → Web → Select ASP.NET Web App.
+ 
+
+Step 2: Give name for the project as ‘RSSFeed’ → Click on Create.
+ 
+
+Step 3: Select ‘Empty’ → click on create.
+
+Step 4: Right click on ‘RSSFeed’ in solution explorer → New Item → Add.
+
+Step 5: Now search for ‘XML’ → select ‘XML File’.
+ 
+
+//XMLFile.xml
+<?xml version="1.0" encoding="utf-8" ?>
+<rss version="2.0">
+<channel>
+<title>W3Schools Home Page</title>
+<link>https://www/w2schools.com</link>
+<description>Free web building tutorials</description>
+<item>
+<title>RSS Tutorial</title>
+<link>https://www.w3schools.com/xml/xml_rss.asp</link>
+<description>New RSS Tutorial on W3Schools</description>
+</item>
+<item>
+ 
+
+
+
+
+
+
+</rss>
+ 
+<title>XML Tutorial</title>
+<link>https://www.w3schools.com/xml</link>
+<description>New XML Tutorial on W3Schools</description>
+</item>
+</channel>
+ 
+
+ 
+ 
+
+Step 6: Search for RSS Subscription Extension in google
+
+Step 7: Right click on RSSFeed → New Item → Add.
+
+Step 8: Select ‘Web Form’ and name it as ‘rss.aspx’ and click on ‘Add’.
+ 
+
+
+//rss.aspx
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="rss.aspx.cs" Inherits="RSSFeed.rss" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+<title></title>
+</head>
+<body>
+<form id="form1" runat="server">
+<div>
+<h1>RSS Demo</h1>
+<a href="XMLFile1.xml">Click Here</a>
+</div>
+</form>
+</body>
+</html>
+
+
+Step 9: Run the project → Click on ‘Click Here’
+ 
+
+The following page is displayed.
+ 
+
+Date:-
+
+Practical 12 Aim: Study and implementation of Single-Sing-On. Step 1: Search auth0 in chrome.
+
+
+
+
+
+Step 2: The AuthPage0 will open. Click on Login.
+
+Step 3: Login with google account.
+ 
+
+
+Step 4: Select account type as ‘Other’. Click next.
+
+
+
+Step 5: The dashboard will get open.
+
+Step 6: Go to social connections. (Authentication → Social)
+
+Step 7: Click on three dots on google- auth0.
+ 
+
+
+Step 8: The following page will be displayed showing “It works”. Now click on “Take me to the dashboard”.
+ 
+
+
+
+Step 9: Click on create connection.
+
+
+Step 10: Select any one option from the given social connections.
+ 
+
+
+Step 11: Click on continue.
+
+Step 12: Click on create.
+
+Step 13: Enable the default app option and click on ‘Try Connection’. Give the required credentials and login to your account.
+
+ 
+The below screen will be displayed. Click on ‘Authorize iam-login’.
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Date:-
+Practical 13
+
+Aim : User Management in the Cloud
+
+Step 1:- Search en.ocloud.de
+
+ 
+
+
+Step 3:- Select NextCloud.
+
+Step 4:- Select Storage Space.
+
+ 
+Step 5:- Select Info/Demo.
+
+Step 6:- Click on Demo.
+Step 7:- Note down the username and password for user and admin account.
+ 
+ 
+Step 8:- Login to the Nextcloud with a user account.
+Step 9:- Click on Files.
+ 
+ 
+Step 10:- To add files click on New.
+
+Step 11:- Select Upload files.
+
+Step 12:- Browse the file you want to upload → select open.
+ 
+
+
+Step 13:- You can see the file is uploaded.
+
+Step 14:- To add a folder click on New → Select Upload Folders.
+
+Step 15:- Browse the desired folder → click on Upload.
+ 
+
+Step 16:- You can see the folder is uploaded.
+
+Step 17:- Logout from the account.
+
+Step 18:- Login to the NextCloud as an admin.
+ 
+Step 19:- To create a user, click on Profile.
+
+Step 20:- Select Accounts
+
+Step 21:- Click on New account.
+ 
+Step 22:- Fill in the details → Click on Add new account.
+
+Step 23:- You can see the new user has been created successfully.
+
+Step 24:- To add a file, click on New → select Upload files.
+ 
+Step 25:- Browse the desired file → click on open.
+
+Step 26:- You can see the file has been uploaded successfully.
+
+Step 27:- To add a folder, click on New → Select Upload folders.
+ 
+
+Step 28:- Browse the desired folder → click on upload.
+
+Step 29:- You can see the folder has been uploaded successfully.
+
+Step 30:- To share a folder , click on the add user icon..
+ 
+
+Step 31:- Select the user you want to share with .
+
+Step 32:- Set the permission you want to give → click on Save share.
+
+Step 33:- You can see ‘shared’ front of the folder indicating the folder has been shared successfully.
+ 
+ 
+Step 34:- To share a file, click on add user icon → select the user you want to share with.
+ 
+
+Step 35:- Set the permission you want to give → click on Save share.
+
+
+Step 36:- You can see ‘shared’ in front of the file indicating the file has been shared successfully.
+ 
+ 
+
